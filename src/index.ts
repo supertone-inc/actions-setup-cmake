@@ -14,7 +14,7 @@ async function run() {
       all_version_info
     );
 
-    const arch = core.getInput('architecture') || 'x64';
+    const arch = core.getInput('architecture');
 
     await setup.addCMakeToPath(chosen_version_info, arch);
   } catch (error) {

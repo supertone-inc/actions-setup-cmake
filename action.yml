@@ -8,7 +8,8 @@ inputs:
     description: 'GitHub token to use when retrieving version info'
     default: '${{ github.token }}'
   architecture:
-    description: 'The architecture of cmake to setup. (x86, x64, arm64)'
+    description: 'Target architecture for cmake to setup. (x64, x86, arm64)'
+    default: x64
 runs:
   using: 'node12'
   main: 'dist/index.js'
