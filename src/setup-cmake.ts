@@ -6,25 +6,15 @@ import * as vi from './version-info';
 
 const PACKAGE_NAME: string = 'cmake';
 
-function getURL(
-  version: vi.VersionInfo,
-  arch_candidates: Array<string>
-): string {
+function getURL(version: vi.VersionInfo, arch: string): string {
   const assets_for_platform: vi.AssetInfo[] = version.assets
     .filter((a) => a.platform === process.platform && a.filetype === 'archive')
     .sort();
   // The arch_candidates provides an ordered set of architectures to try, and
   // the first matching asset is used. This will typically be 'x86_64' first,
   // with 'x86' checked if nothing was found.
-  let matching_assets = undefined;
-  for (let arch of arch_candidates) {
-    const arch_assets = assets_for_platform.filter((a) => a.arch === arch);
-    if (arch_assets.length != 0) {
-      matching_assets = arch_assets;
-      break;
-    }
-  }
-  if (matching_assets == undefined) {
+  let matching_assets = assets_for_platform.filter((a) => a.arch === arch);
+  if (matching_assets.length === 0) {
     // If there are no x86_64 or x86 packages then give up.
     throw new Error(
       `Could not find ${process.platform} asset for cmake version ${version.name}`
@@ -66,9 +56,9 @@ async function getArchive(url: string): Promise<string> {
 
 export async function addCMakeToToolCache(
   version: vi.VersionInfo,
-  arch_candidates: Array<string>
+  arch: string
 ): Promise<string> {
-  const extracted_archive = await getArchive(getURL(version, arch_candidates));
+  const extracted_archive = await getArchive(getURL(version, arch));
   return await tc.cacheDir(extracted_archive, PACKAGE_NAME, version.name);
 }
 
@@ -94,11 +84,11 @@ async function getBinDirectoryFrom(tool_path: string): Promise<string> {
 
 export async function addCMakeToPath(
   version: vi.VersionInfo,
-  arch_candidates: Array<string>
+  arch: string
 ): Promise<void> {
   let tool_path: string = tc.find(PACKAGE_NAME, version.name);
   if (!tool_path) {
-    tool_path = await addCMakeToToolCache(version, arch_candidates);
+    tool_path = await addCMakeToToolCache(version, arch);
   }
   await core.addPath(await getBinDirectoryFrom(tool_path));
 }

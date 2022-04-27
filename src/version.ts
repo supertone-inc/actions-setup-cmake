@@ -58,15 +58,17 @@ function extractFileTypeFrom(filename: string): string {
 
 function extractArchFrom(filename: string): string {
   if (filename.match(/x86_64/)) {
-    return 'x86_64';
+    return 'x64';
   } else if (filename.match(/x64/)) {
-    return 'x86_64';
+    return 'x64';
   } else if (filename.match(/universal/)) {
-    return 'x86_64';
+    return 'x64';
   } else if (filename.match(/x86/)) {
     return 'x86';
   } else if (filename.match(/i386/)) {
     return 'x86';
+  } else if (filename.match(/aarch64/)) {
+    return 'arm64';
   } else {
     return '';
   }

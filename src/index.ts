@@ -14,10 +14,9 @@ async function run() {
       all_version_info
     );
 
-    const use_32bits = core.getInput('use-32bit').toLowerCase() === 'true';
-    const arch_candidates = use_32bits ? ['x86'] : ['x86_64', 'x86'];
+    const arch = core.getInput('architecture') || 'x64';
 
-    await setup.addCMakeToPath(chosen_version_info, arch_candidates);
+    await setup.addCMakeToPath(chosen_version_info, arch);
   } catch (error) {
     core.setFailed((error as Error).message);
   }
