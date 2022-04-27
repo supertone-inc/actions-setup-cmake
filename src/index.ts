@@ -14,7 +14,9 @@ async function run() {
       all_version_info
     );
 
-    const arch = core.getInput('architecture');
+    const arch =
+      core.getInput('architecture') ||
+      (process.arch === 'ia32' ? 'x86' : process.arch);
 
     await setup.addCMakeToPath(chosen_version_info, arch);
   } catch (error) {
